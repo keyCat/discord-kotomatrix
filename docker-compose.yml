@@ -1,0 +1,10 @@
+services:
+  kotomatrix:
+    build: .
+    image: discord-kotomatrix:latest
+    restart: unless-stopped
+    command: dist/index.js
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env
