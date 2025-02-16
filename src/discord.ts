@@ -1,4 +1,7 @@
-import { APIApplicationCommandOption } from 'discord-api-types/payloads/v10';
+import {
+  APIApplicationCommandOption,
+  ApplicationCommandOptionType,
+} from 'discord-api-types/payloads/v10';
 import FormData from 'form-data';
 import fetch, { Headers, RequestInit, Response } from 'node-fetch';
 import config from './config';
@@ -58,6 +61,35 @@ const discord = {
       console.error('Unable to install slash commands');
       throw err;
     }
+  },
+
+  async interactionFollowup(
+    token: string,
+    options: APICallOptions,
+  ): Promise<Response> {
+    options.method = 'POST';
+    return discord.request(`/webhooks/${config.appId}/${token}`, options);
+  },
+
+  readCommandOptions(options: any[]): Record<string, any> {
+    return (
+      options.reduce((accum: Record<string, any>, option: any) => {
+        switch (option.type) {
+          case ApplicationCommandOptionType.Subcommand:
+          case ApplicationCommandOptionType.SubcommandGroup:
+            if (option.options?.length) {
+              accum[option.name] = discord.readCommandOptions(option.options);
+            } else {
+              accum[option.name] = true;
+            }
+            break;
+          default:
+            accum[option.name] = option.value;
+        }
+
+        return accum;
+      }, {}) || {}
+    );
   },
 };
 

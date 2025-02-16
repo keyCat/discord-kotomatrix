@@ -22,31 +22,48 @@ const cataas = {
   },
 
   async getCat(options?: {
-    says?: string;
-    size?: number;
-    font?: string;
-    color?: string;
-    background?: string;
+    pic?: {
+      text?: string;
+      size?: number;
+      font?: string;
+      color?: string;
+      background?: string;
+    };
+    gif?: {
+      text?: string;
+      size?: number;
+      font?: string;
+      color?: string;
+      background?: string;
+    };
   }): Promise<Response> {
-    let endpoint = options?.says
-      ? `/cat/says/${encodeURIComponent(options.says)}`
-      : '/cat';
+    let endpoint = '/cat';
+    let params = options?.gif ?? options?.pic;
+    if (options?.gif) {
+      endpoint = '/cat/gif';
+    }
+    if (params?.text) {
+      endpoint += `/says/${encodeURIComponent(params.text)}`;
+    }
     const searchParams = new URLSearchParams();
-    if (options?.says) {
-      if (options?.size) {
-        searchParams.append('fontSize', String(options.size));
+    if (params) {
+      if (params.size) {
+        searchParams.append('fontSize', String(params.size));
       }
-      if (options?.font) {
-        searchParams.append('font', options.font);
+      if (params.font) {
+        searchParams.append('font', params.font);
       }
-      if (options?.color) {
-        searchParams.append('fontColor', options.color);
+      if (params.color) {
+        searchParams.append('fontColor', params.color);
       }
-      if (options?.background) {
-        searchParams.append('fontBackground', options.background);
+      if (params.background) {
+        searchParams.append('fontBackground', params.background);
       }
     }
-    endpoint += `?${searchParams.toString()}`;
+    if (searchParams.size) {
+      endpoint += `?${searchParams.toString()}`;
+    }
+
     const res = await cataas.request(endpoint, {
       headers: { Accept: 'image/*' },
     });
