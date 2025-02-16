@@ -1,6 +1,6 @@
 {
   "name": "discord-kotomatrix",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Simple discord bot to send random cat pictures.",
   "main": "build/index.js",
   "engines": {

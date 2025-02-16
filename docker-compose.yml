@@ -1,7 +1,7 @@
 services:
   kotomatrix:
     build: .
-    image: discord-kotomatrix:1.0.0
+    image: discord-kotomatrix:1.1.0
     restart: unless-stopped
     command: dist/index.js
     ports:
